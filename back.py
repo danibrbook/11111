@@ -2,7 +2,7 @@
 """
 Daniel Trader PRO - Bot Multi-Estratégias
 Versão ajustada para Render e horários UTC
-Terminal com cores, banners, martingale, stop gain/stop loss e ciclos programados
+Terminal com cores, banners, martingale, stop gain/stop loss, ciclos programados e monitoramento de logs
 """
 
 from iqoptionapi.api import IQOption
@@ -27,7 +27,7 @@ STOP_LOSS = 2000
 MARTINGALE = 10
 QTD_VELAS = 5
 
-CICLOS_UTC = ["17:11", "12:09", "13:39", "19:21"]
+CICLOS_UTC = ["17:11", "12:09", "13:39", "21:05"]
 
 # ---------------- CONFIGURAÇÕES EMAIL ----------------
 EMAIL_REMETENTE = "botdanieltrader@gmail.com"
@@ -216,6 +216,9 @@ try:
         print("\r[Aguardando oportunidade...]", end="")
         time.sleep(1)
 
+        # Monitoramento rápido
+        print(f"\n[{agora_utc().strftime('%H:%M:%S')}] Bot rodando... Lucro atual: {lucro}")
+
         velas = API.get_candles(ATIVO, TIMEFRAME*60, QTD_VELAS, time.time())
         cores = ['A' if v['open'] < v['close'] else 'B' if v['open'] > v['close'] else 'D' for v in velas]
 
@@ -234,7 +237,6 @@ try:
             continue
         payout_decimal = payout / 100.0
 
-        # Loop do Martingale
         for i_gale in range(martingale+1):
             ok, order_id = compra(API, ATIVO, valor_entrada_atual, direcao, 1, 'digital' if TIPO=="digital" else 'binaria')
             if not ok:
