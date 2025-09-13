@@ -1,4 +1,4 @@
-my-iqoptionapi
+py-iqoption-api
 pandas
 numpy
 requests
