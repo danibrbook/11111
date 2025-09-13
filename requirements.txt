@@ -1,4 +1,4 @@
-iqoptionapi
+iqoptionapi==6.10.4
 pandas
 numpy
 requests
