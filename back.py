@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """
 Daniel Trader PRO - Bot Multi-Estratégias
-Versão ajustada para PythonAnywhere e horários UTC
+Versão ajustada para Render e horários UTC
 Terminal com cores, banners, martingale, stop gain/stop loss e ciclos programados
 """
 
-from iqoptionapi.stable_api import IQ_Option
+from iqoptionapi.api import IQOption
 from datetime import datetime, timedelta
 import time, sys, pandas as pd, os, csv
 import smtplib
@@ -27,8 +27,7 @@ STOP_LOSS = 2000
 MARTINGALE = 10
 QTD_VELAS = 5
 
-# Ciclos de operação em UTC
-CICLOS_UTC = ["12:01", "12:09", "13:39", "19:21"]
+CICLOS_UTC = ["17:11", "12:09", "13:39", "19:21"]
 
 # ---------------- CONFIGURAÇÕES EMAIL ----------------
 EMAIL_REMETENTE = "botdanieltrader@gmail.com"
@@ -62,7 +61,7 @@ def agora_utc():
 
 # ---------------- conexão ----------------
 def conectar(email, senha, tipoConta='PRACTICE'):
-    api = IQ_Option(email, senha)
+    api = IQOption(email, senha)
     print("Conectando...")
     api.connect()
     t0=time.time()
@@ -248,7 +247,7 @@ try:
             resultado = check_result(API, order_id, 'digital' if TIPO=="digital" else 'binaria')
             if resultado is None:
                 print("⚠️ Resultado não disponível, pulando Martingale")
-                continue  # Martingale só em perda real
+                continue
 
             valor_result = float(resultado)
             lucro += round(valor_result, 2)
@@ -270,12 +269,11 @@ try:
                 round(lucro, 2)
             ])
 
-            # Martingale somente se perdeu
             if valor_result < 0:
                 valor_entrada_atual = Martingale(valor_entrada_atual, payout_decimal)
                 print(f"🔁 Aplicando Martingale, próximo valor: {valor_entrada_atual}")
             else:
-                break  # se ganhou ou empatou, sai do loop do Martingale
+                break
 
             if not stop_check(lucro, STOP_GAIN, STOP_LOSS):
                 rodando = False
