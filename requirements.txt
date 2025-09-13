@@ -1,4 +1,4 @@
 requests
 pandas
 numpy
-git+https://github.com/Lu-Yi-Hsun/pyiqoption.git
+iqoptionapi
